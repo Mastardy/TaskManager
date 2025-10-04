@@ -14,5 +14,6 @@ db.createUser({
 db.createCollection("${MONGO_COLLECTION}");
 db.${MONGO_COLLECTION}.insertOne({
     title: "Test",
-    status: "pending"
+    description: "Test description",
+    isDone: true
 })

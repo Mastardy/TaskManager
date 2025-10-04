@@ -1,6 +1,9 @@
 using System.Text.Json.Serialization;
 using TaskManager.API.Models;
 using TaskManager.API.Services;
+using DotNetEnv;
+
+Env.Load("Mongo.env");
 
 var builder = WebApplication.CreateBuilder(args);
 
