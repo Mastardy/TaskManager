@@ -17,4 +17,8 @@ public class Task
     [BsonElement("isDone")]
     [JsonPropertyName("isDone")]
     public bool IsDone { get; set; }
+
+    [BsonElement("description")]
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
 }

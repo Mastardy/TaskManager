@@ -1,22 +1,60 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using TaskManager.API.Models;
+using TaskManager.API.Utils;
 
 namespace TaskManager.API.Services;
 
 public class TasksService
 {
-    private readonly IMongoCollection<Models.Task> _taskCollection;
+    private readonly IMongoCollection<Models.Task> m_TaskCollection;
 
-    public TasksService(IOptions<MongoDBSettings> settings)
+    public TasksService(IOptions<Models.MongoDBSettings> settings)
     {
-        var mongoClient = new MongoClient(settings.Value.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(settings.Value.DatabaseName);
-        _taskCollection = mongoDatabase.GetCollection<Models.Task>(settings.Value.TasksCollectionName);
+        var MongoSettings = settings.Value;
+        var TasksSettings = MongoSettings.Tasks;
+
+        var user = EnvHelper.Get(TasksSettings.UserKey);
+        var password = EnvHelper.Get(TasksSettings.PasswordKey);
+        var database = EnvHelper.Get(TasksSettings.DatabaseKey);
+        var collection = EnvHelper.Get(TasksSettings.CollectionKey);
+
+        var mongoURI =
+            $"mongodb://{user}:{password}@{MongoSettings.Host}/admin?authSource={database}";
+
+        Console.WriteLine($"URI: {mongoURI}");
+
+        var mongoClient = new MongoClient(mongoURI);
+        var mongoDatabase = mongoClient.GetDatabase(database);
+        m_TaskCollection = mongoDatabase.GetCollection<Models.Task>(collection);
     }
 
-    public async Task<List<Models.Task>> GetTasksAsync()
+    public async Task<List<Models.Task>> GetAsync()
     {
-        return await _taskCollection.Find(_ => true).ToListAsync();
+        return await m_TaskCollection.Find(_ => true).ToListAsync();
+    }
+
+    public async Task<Models.Task?> GetAsync(string id)
+    {
+        return await m_TaskCollection.Find(x => x.Id == id).FirstAsync();
+    }
+
+    public async Task CreateAsync(Models.Task newTask)
+    {
+        await m_TaskCollection.InsertOneAsync(newTask);
+    }
+
+    public async Task UpdateAsync(Models.Task updatedTask)
+    {
+        await m_TaskCollection.ReplaceOneAsync(x => x.Id == updatedTask.Id, updatedTask);
+    }
+
+    public async Task DeleteAsync(string id)
+    {
+        await m_TaskCollection.DeleteOneAsync(x => x.Id == id);
+    }
+
+    public async Task DeleteAsync(params string[] ids)
+    {
+        await m_TaskCollection.DeleteManyAsync(x => ids.Contains(x.Id));
     }
 }
