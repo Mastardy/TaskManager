@@ -1,22 +1,26 @@
 ﻿services:
-  taskmanager.api:
-    image: taskmanager.api
-    build:
-      context: ./TaskManager.API
-      dockerfile: Dockerfile
-    ports:
-      - "8000:80"
-      - "8001:443"
-    depends_on:
-      - mongo
+  #  taskmanager.api:
+  #    image: taskmanager.api
+  #    build:
+  #      context: ./TaskManager.API
+  #      dockerfile: Dockerfile
+  #    ports:
+  #      - "8000:80"
+  #      - "8001:443"
+  #    depends_on:
+  #      - mongo
   
   mongo:
-    image: mongo:latest
+    build:
+      context: .
+      dockerfile: Mongo.Dockerfile
     container_name: mongo
     restart: always
+    env_file: Mongo.env
     ports:
       - "27017:27017"
     volumes:
+      - ./data/mongo-init/:/docker-entrypoint-initdb.d/
       - type: bind
         source: ./data/db
         target: /data/db
