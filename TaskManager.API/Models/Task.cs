@@ -1,0 +1,20 @@
+using System.Text.Json.Serialization;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace TaskManager.API.Models;
+
+public class Task
+{
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? Id { get; set; }
+
+    [BsonElement("title")]
+    [JsonPropertyName("title")]
+    public required string Title { get; set; }
+
+    [BsonElement("isDone")]
+    [JsonPropertyName("isDone")]
+    public bool IsDone { get; set; }
+}

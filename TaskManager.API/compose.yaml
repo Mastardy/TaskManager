@@ -1,0 +1,22 @@
+﻿services:
+  taskmanager.api:
+    image: taskmanager.api
+    build:
+      context: ./TaskManager.API
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+      - "8001:443"
+    depends_on:
+      - mongo
+  
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - type: bind
+        source: ./data/db
+        target: /data/db
