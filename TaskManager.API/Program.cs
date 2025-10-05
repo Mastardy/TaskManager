@@ -2,6 +2,9 @@ using System.Text.Json.Serialization;
 using TaskManager.API.Models;
 using TaskManager.API.Services;
 using DotNetEnv;
+using Microsoft.Extensions.Options;
+using Redis.OM;
+using TaskManager.API.Services.Repositories;
 
 Env.Load("Mongo.env");
 
@@ -14,8 +17,18 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 
 builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDB"));
+builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("Redis"));
 
+builder.Services.AddSingleton<RedisConnectionProvider>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<RedisSettings>>().Value;
+    return new RedisConnectionProvider($"redis://{settings.Host}/");
+});
+
+builder.Services.AddSingleton<RedisService>();
+builder.Services.AddSingleton<MongoDBService>();
 builder.Services.AddSingleton<TasksService>();
+builder.Services.AddHostedService<RedisIndexingService>();
 
 builder.Services.AddOpenApi();
 

@@ -9,10 +9,13 @@ public class TasksController : ControllerBase
 {
     private readonly TasksService m_TasksService;
 
-    public TasksController(TasksService mTasksService) => m_TasksService = mTasksService;
+    public TasksController(TasksService tasksService)
+    {
+        m_TasksService = tasksService;
+    }
 
     [HttpGet]
-    public async Task<List<Models.Task>> Get() => await m_TasksService.GetAsync();
+    public async Task<List<Models.Task>> Get() => await m_TasksService.GetAllAsync();
 
     [HttpGet("{id:length(24)}")]
     public async Task<ActionResult<Models.Task>> Get(string id)

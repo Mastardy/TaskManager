@@ -1,60 +1,48 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using TaskManager.API.Services.Repositories;
 using TaskManager.API.Utils;
 
 namespace TaskManager.API.Services;
 
 public class TasksService
 {
-    private readonly IMongoCollection<Models.Task> m_TaskCollection;
+    private readonly MongoDBService m_MongoDBService;
+    private readonly RedisService m_RedisService;
 
-    public TasksService(IOptions<Models.MongoDBSettings> settings)
+    public TasksService(MongoDBService mongoDBService, RedisService redisService)
     {
-        var MongoSettings = settings.Value;
-        var TasksSettings = MongoSettings.Tasks;
-
-        var user = EnvHelper.Get(TasksSettings.UserKey);
-        var password = EnvHelper.Get(TasksSettings.PasswordKey);
-        var database = EnvHelper.Get(TasksSettings.DatabaseKey);
-        var collection = EnvHelper.Get(TasksSettings.CollectionKey);
-
-        var mongoURI =
-            $"mongodb://{user}:{password}@{MongoSettings.Host}/admin?authSource={database}";
-
-        Console.WriteLine($"URI: {mongoURI}");
-
-        var mongoClient = new MongoClient(mongoURI);
-        var mongoDatabase = mongoClient.GetDatabase(database);
-        m_TaskCollection = mongoDatabase.GetCollection<Models.Task>(collection);
+        m_MongoDBService = mongoDBService;
+        m_RedisService = redisService;
     }
 
-    public async Task<List<Models.Task>> GetAsync()
+    public async Task<List<Models.Task>> GetAllAsync()
     {
-        return await m_TaskCollection.Find(_ => true).ToListAsync();
+        return new List<Models.Task>();
+        // return await m_TaskCollection.Find(_ => true).ToListAsync();
     }
 
     public async Task<Models.Task?> GetAsync(string id)
     {
-        return await m_TaskCollection.Find(x => x.Id == id).FirstAsync();
+        return new Models.Task
+        {
+            Title = "Test"
+        };
+        // return await m_TaskCollection.Find(x => x.Id == id).FirstAsync();
     }
 
     public async Task CreateAsync(Models.Task newTask)
     {
-        await m_TaskCollection.InsertOneAsync(newTask);
+        // await m_TaskCollection.InsertOneAsync(newTask);
     }
 
     public async Task UpdateAsync(Models.Task updatedTask)
     {
-        await m_TaskCollection.ReplaceOneAsync(x => x.Id == updatedTask.Id, updatedTask);
+        // await m_TaskCollection.ReplaceOneAsync(x => x.Id == updatedTask.Id, updatedTask);
     }
 
     public async Task DeleteAsync(string id)
     {
-        await m_TaskCollection.DeleteOneAsync(x => x.Id == id);
-    }
-
-    public async Task DeleteAsync(params string[] ids)
-    {
-        await m_TaskCollection.DeleteManyAsync(x => ids.Contains(x.Id));
+        // await m_TaskCollection.DeleteOneAsync(x => x.Id == id);
     }
 }

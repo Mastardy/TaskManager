@@ -24,3 +24,17 @@
       - type: bind
         source: ./data/db
         target: /data/db
+  
+  redis:
+    image: redis/redis-stack-server
+    container_name: redis-stack
+    restart: always
+    ports:
+      - "6379:6379"
+    command: [ "/entrypoint.sh", "./redis-stack.conf" ]
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping"]
+    volumes:
+      - type: bind
+        source: ./data/redis
+        target: /data/
