@@ -7,3 +7,4 @@ riderModule.iml
 TaskManager.API/Data/db/
 *.DotSettings.user
 *.env
+TaskManager.API/Data/redis/
