@@ -14,9 +14,15 @@ public class RedisService
         m_TaskCache = (RedisCollection<TaskCache>)provider.RedisCollection<TaskCache>();
     }
 
-    public async Task<List<TaskCache>> GetAllAsync() => (List<TaskCache>)await m_TaskCache.ToListAsync();
     public async Task<TaskCache?> GetAsync(string id) => await m_TaskCache.FindByIdAsync(id);
     public async Task InsertAsync(TaskCache task) => await m_TaskCache.InsertAsync(task);
-    public async Task UpdateAsync(TaskCache task) => await m_TaskCache.UpdateAsync(task);
+    public async Task InsertAsync(TaskCache task, TimeSpan ttl) => await m_TaskCache.InsertAsync(task, ttl);
     public async Task DeleteAsync(TaskCache task) => await m_TaskCache.DeleteAsync(task);
+    public async Task DeleteAsync(string? id)
+    {
+        if (string.IsNullOrEmpty(id)) return;
+        var task = await GetAsync(id);
+        if (task == null) return;
+        await m_TaskCache.DeleteAsync(task);
+    }
 }

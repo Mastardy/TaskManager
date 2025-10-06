@@ -18,31 +18,37 @@ public class TasksService
 
     public async Task<List<Models.Task>> GetAllAsync()
     {
-        return new List<Models.Task>();
-        // return await m_TaskCollection.Find(_ => true).ToListAsync();
+        return await m_MongoDBService.GetAllAsync();
     }
 
     public async Task<Models.Task?> GetAsync(string id)
     {
-        return new Models.Task
-        {
-            Title = "Test"
-        };
-        // return await m_TaskCollection.Find(x => x.Id == id).FirstAsync();
+        var cache = await m_RedisService.GetAsync(id);
+        if (cache != null) return cache;
+
+        var result = await m_MongoDBService.GetAsync(id);
+        if (result == null) return null;
+
+        // TODO : This should not delay the retrieval, perhaps call RabbitMQ or Fire & Forget?
+        await m_RedisService.InsertAsync(result, TimeSpan.FromMinutes(1));
+        return result;
     }
 
     public async Task CreateAsync(Models.Task newTask)
     {
-        // await m_TaskCollection.InsertOneAsync(newTask);
+        await m_RedisService.InsertAsync(newTask, TimeSpan.FromMinutes(1));
+        await m_MongoDBService.CreateAsync(newTask);
     }
 
     public async Task UpdateAsync(Models.Task updatedTask)
     {
-        // await m_TaskCollection.ReplaceOneAsync(x => x.Id == updatedTask.Id, updatedTask);
+        await m_RedisService.DeleteAsync(updatedTask.Id);
+        await m_MongoDBService.UpdateAsync(updatedTask);
     }
 
     public async Task DeleteAsync(string id)
     {
-        // await m_TaskCollection.DeleteOneAsync(x => x.Id == id);
+        await m_RedisService.DeleteAsync(id);
+        await m_MongoDBService.DeleteAsync(id);
     }
 }

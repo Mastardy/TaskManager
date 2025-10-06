@@ -25,7 +25,7 @@ public class MongoDBService
         m_TaskCollection = mongoDatabase.GetCollection<Models.Task>(collection);
     }
 
-    public async Task<List<Models.Task>> GetAsync() => await m_TaskCollection.Find(_ => true).ToListAsync();
+    public async Task<List<Models.Task>> GetAllAsync() => await m_TaskCollection.Find(_ => true).ToListAsync();
 
     public async Task<Models.Task?> GetAsync(string id) => await m_TaskCollection.Find(x => x.Id == id).FirstAsync();
 
