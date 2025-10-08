@@ -1,9 +1,9 @@
 using Redis.OM.Modeling;
 
-namespace TaskManager.API.Models;
+namespace API.Models;
 
-[Document(StorageType = StorageType.Json, Prefixes = new[] { "Task" })]
-public class TaskCache
+[Document(StorageType = StorageType.Json, Prefixes = new[] { "Card" })]
+public class CardCache
 {
     [RedisIdField, Indexed]
     public string? Id { get; set; }
@@ -17,9 +17,9 @@ public class TaskCache
     [RedisField]
     public bool IsDone { get; set; }
 
-    public static implicit operator Task(TaskCache cache)
+    public static implicit operator Card(CardCache cache)
     {
-        return new Task()
+        return new Card()
         {
             Id = cache.Id,
             Title = cache.Title,
@@ -28,9 +28,9 @@ public class TaskCache
         };
     }
 
-    public static implicit operator TaskCache(Task data)
+    public static implicit operator CardCache(Card data)
     {
-        return new TaskCache()
+        return new CardCache()
         {
             Id = data.Id,
             Title = data.Title,

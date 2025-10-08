@@ -1,0 +1,20 @@
+@API_HostAddress = http://localhost:5254
+@API_Route = {{API_HostAddress}}/api/v1
+
+### GET All Cards
+GET {{API_Route}}/cards
+Accept: application/json
+
+### Get Card
+GET {{API_Route}}/cards/68e3bffcee7a0f8a37110bf4
+Accept: application/json
+
+### Post Card
+POST {{API_Route}}/cards
+Content-Type: application/json
+
+{
+  "title": "Card Name",
+  "description": "Card Description"
+  
+}

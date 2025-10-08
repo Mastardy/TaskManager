@@ -1,12 +1,14 @@
 using System.Text.Json.Serialization;
-using TaskManager.API.Models;
-using TaskManager.API.Services;
+using API.Models;
+using API.Services;
 using DotNetEnv;
 using Microsoft.Extensions.Options;
 using Redis.OM;
-using TaskManager.API.Services.Repositories;
+using API.Services.Messaging;
+using API.Services.Repositories;
 
 Env.Load("Mongo.env");
+Env.Load("RabbitMQ.env");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDB"));
 builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("Redis"));
+builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
 
 builder.Services.AddSingleton<RedisConnectionProvider>(sp =>
 {
@@ -27,7 +30,8 @@ builder.Services.AddSingleton<RedisConnectionProvider>(sp =>
 
 builder.Services.AddSingleton<RedisService>();
 builder.Services.AddSingleton<MongoDBService>();
-builder.Services.AddSingleton<TasksService>();
+builder.Services.AddSingleton<RabbitMQService>();
+builder.Services.AddSingleton<CardsService>();
 builder.Services.AddHostedService<RedisIndexingService>();
 
 builder.Services.AddOpenApi();

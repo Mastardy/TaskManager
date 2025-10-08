@@ -1,8 +1,7 @@
 using Redis.OM;
-using TaskManager.API.Models;
-using Task = System.Threading.Tasks.Task;
+using API.Models;
 
-namespace TaskManager.API.Services;
+namespace API.Services;
 
 public class RedisIndexingService : IHostedService
 {
@@ -12,7 +11,7 @@ public class RedisIndexingService : IHostedService
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await m_Provider.Connection.CreateIndexAsync(typeof(TaskCache));
+        await m_Provider.Connection.CreateIndexAsync(typeof(CardCache));
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

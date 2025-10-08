@@ -1,4 +1,4 @@
-namespace TaskManager.API.Models;
+namespace API.Models;
 
 public class RedisSettings
 {

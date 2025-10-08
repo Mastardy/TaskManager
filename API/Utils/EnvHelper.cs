@@ -1,4 +1,4 @@
-namespace TaskManager.API.Utils;
+namespace API.Utils;
 
 public static class EnvHelper
 {

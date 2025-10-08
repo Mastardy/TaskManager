@@ -4,7 +4,9 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
-TaskManager.API/Data/db/
+API/Data/db/
 *.DotSettings.user
 *.env
-TaskManager.API/Data/redis/
+API/Data/redis/
+
+API/Data/rabbitmq/
