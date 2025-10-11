@@ -8,6 +8,8 @@ public class Card
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
+    [BsonElement("_id")]
+    [JsonPropertyName("_id")]
     public string? Id { get; set; }
 
     [BsonElement("title")]

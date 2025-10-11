@@ -9,6 +9,8 @@
   #      - "8001:443"
   #    depends_on:
   #      - mongo
+  #      - redis
+  #      - rabbitmq
   
   mongo:
     build:

@@ -28,7 +28,7 @@ public class MongoDBService
 
     public async Task<List<Card>> GetAllAsync() => await m_CardCollection.Find(_ => true).ToListAsync();
 
-    public async Task<Card?> GetAsync(string id) => await m_CardCollection.Find(x => x.Id == id).FirstAsync();
+    public async Task<Card?> GetAsync(string id) => await m_CardCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
     public async Task CreateAsync(Card newCard) => await m_CardCollection.InsertOneAsync(newCard);
 

@@ -1,12 +1,7 @@
-@API_HostAddress = http://localhost:5254
-@API_Route = {{API_HostAddress}}/api/v1
+@API_Route = http://localhost:5254/api/v1
 
 ### GET All Cards
 GET {{API_Route}}/cards
-Accept: application/json
-
-### Get Card
-GET {{API_Route}}/cards/68e3bffcee7a0f8a37110bf4
 Accept: application/json
 
 ### Post Card
@@ -16,5 +11,25 @@ Content-Type: application/json
 {
   "title": "Card Name",
   "description": "Card Description"
-  
 }
+
+> {%
+    client.global.set("cardId", response.body._id);
+%}
+
+### Get Card
+GET {{API_Route}}/cards/{{cardId}}
+Accept: application/json
+
+### Put Card
+PUT {{API_Route}}/cards/{{cardId}}
+Content-Type: application/json
+
+{
+  "Title": "Different Name",
+  "description": "Different Description"
+}
+
+### Delete Card
+DELETE {{API_Route}}/cards/{{cardId}}
+Accept: application/json

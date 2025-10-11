@@ -78,35 +78,35 @@ public class RabbitMQService : IAsyncDisposable
 
         await channel.BasicPublishAsync(string.Empty, queueName, body);
     }
-
+    
     public async Task<T?> ConsumeAsync<T>(string queueName)
     {
         var channel = await GetChannelAsync();
-
+    
         await DeclareQueueAsync(queueName);
-
+    
         var result = await channel.BasicGetAsync(queueName, true);
         if (result == null) return default;
-
+    
         var json = Encoding.UTF8.GetString(result.Body.ToArray());
         return JsonSerializer.Deserialize<T>(json);
     }
-
+    
     public async Task StartConsumingAsync<T>(string queueName, Func<T?, Task> messageHandler)
     {
         var channel = await GetChannelAsync();
-
+    
         await DeclareQueueAsync(queueName);
-
+    
         var consumer = new AsyncEventingBasicConsumer(channel);
-
+    
         consumer.ReceivedAsync += async (_ /*sender*/, evtArgs) =>
         {
             try
             {
                 var json = Encoding.UTF8.GetString(evtArgs.Body.ToArray());
                 var message = JsonSerializer.Deserialize<T>(json);
-
+    
                 await messageHandler(message);
                 await channel.BasicAckAsync(evtArgs.DeliveryTag, multiple: false);
             }
@@ -116,7 +116,7 @@ public class RabbitMQService : IAsyncDisposable
                 await channel.BasicNackAsync(evtArgs.DeliveryTag, multiple: false, requeue: true);
             }
         };
-
+    
         await channel.BasicConsumeAsync(queueName, false, consumer);
     }
 
