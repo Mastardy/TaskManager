@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using API.Services;
 using API.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("api/v1/cards")]
+[Authorize]
 public class CardsController : ControllerBase
 {
     private readonly CardsService m_CardsService;
@@ -21,6 +23,7 @@ public class CardsController : ControllerBase
     [HttpGet("{id:length(24)}")]
     public async Task<ActionResult<Card>> Get(string id)
     {
+        Console.WriteLine(User.Identity?.Name);
         var card = await m_CardsService.GetAsync(id);
         return card is null ? NotFound() : card;
     }
