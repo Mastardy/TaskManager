@@ -1,0 +1,43 @@
+@API_Route = http://localhost:5254/api/v1
+@JWT = 
+
+### Get JWT from github OAuth: http://localhost:5254/api/v1/auth/github
+
+### GET All Cards
+GET {{API_Route}}/cards
+Authorization: Bearer {{JWT}}
+Accept: application/json
+
+### Post Card
+POST {{API_Route}}/cards
+Authorization: Bearer {{JWT}}
+Content-Type: application/json
+
+{
+  "title": "Card Name",
+  "description": "Card Description"
+}
+
+> {%
+    client.global.set("cardId", response.body._id);
+%}
+
+### Get Card
+GET {{API_Route}}/cards/{{cardId}}
+Authorization: Bearer {{JWT}}
+Accept: application/json
+
+### Put Card
+PUT {{API_Route}}/cards/{{cardId}}
+Authorization: Bearer {{JWT}}
+Content-Type: application/json
+
+{
+  "Title": "Different Name",
+  "description": "Different Description"
+}
+
+### Delete Card
+DELETE {{API_Route}}/cards/{{cardId}}
+Authorization: Bearer {{JWT}}
+Accept: application/json

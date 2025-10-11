@@ -1,0 +1,58 @@
+﻿services:
+  #  cardmanager.api:
+  #    image: cardmanager.api
+  #    build:
+  #      context: ./API
+  #      dockerfile: Dockerfile
+  #    ports:
+  #      - "8000:80"
+  #      - "8001:443"
+  #    depends_on:
+  #      - mongo
+  #      - redis
+  #      - rabbitmq
+  
+  mongo:
+    build:
+      context: .
+      dockerfile: Mongo.Dockerfile
+    container_name: mongo
+    restart: always
+    env_file: Mongo.env
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongo-init/:/docker-entrypoint-initdb.d/
+      - type: bind
+        source: ./data/db
+        target: /data/db
+  
+  redis:
+    image: redis/redis-stack-server
+    container_name: redis-stack
+    restart: always
+    ports:
+      - "6379:6379"
+    command: [ "/entrypoint.sh", "./redis-stack.conf" ]
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+    volumes:
+      - type: bind
+        source: ./data/redis
+        target: /data/
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    env_file: RabbitMQ.env
+    volumes:
+      - type: bind
+        source: ./data/rabbitmq/lib/
+        target: /var/lib/rabbitmq/
+      - type: bind
+        source: ./data/rabbitmq/log/
+        target: /var/log/rabbitmq

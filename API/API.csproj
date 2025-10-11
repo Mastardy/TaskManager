@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>API</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="DotNetEnv" Version="3.1.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9"/>
+        <PackageReference Include="MongoDB.Driver" Version="3.5.0"/>
+        <PackageReference Include="RabbitMQ.Client" Version="7.1.2"/>
+        <PackageReference Include="Redis.OM" Version="1.1.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.6"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
+        <Content Remove="Data\db\**"/>
+        <Content Remove="Data\rabbitmq\**"/>
+        <Content Remove="Data\redis\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Data\db\**"/>
+        <Compile Remove="Data\rabbitmq\**"/>
+        <Compile Remove="Data\redis\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Remove="Data\db\**"/>
+        <EmbeddedResource Remove="Data\rabbitmq\**"/>
+        <EmbeddedResource Remove="Data\redis\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Data\db\**"/>
+        <None Remove="Data\rabbitmq\**"/>
+        <None Remove="Data\redis\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="Data\rabbitmq\lib\mnesia\rabbit@117a85c924dc\cluster_nodes.config"/>
+        <_ContentIncludedByDefault Remove="Data\rabbitmq\lib\mnesia\rabbit@117a85c924dc\msg_stores\vhosts\628WB79CIFDYO9LJI6DKMI09L\.config"/>
+    </ItemGroup>
+
+</Project>

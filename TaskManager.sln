@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.API", "TaskManager.API\TaskManager.API.csproj", "{AB34E879-56F1-4358-BFB8-AFC71D186788}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{AB34E879-56F1-4358-BFB8-AFC71D186788}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerService", "LoggerService\LoggerService.csproj", "{D088298B-7662-41FF-AA3B-FB50F8427B15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +14,9 @@ Global
 		{AB34E879-56F1-4358-BFB8-AFC71D186788}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB34E879-56F1-4358-BFB8-AFC71D186788}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB34E879-56F1-4358-BFB8-AFC71D186788}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D088298B-7662-41FF-AA3B-FB50F8427B15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D088298B-7662-41FF-AA3B-FB50F8427B15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D088298B-7662-41FF-AA3B-FB50F8427B15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D088298B-7662-41FF-AA3B-FB50F8427B15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
