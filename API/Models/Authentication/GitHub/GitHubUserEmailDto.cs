@@ -1,12 +1,12 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace API.Models.Authentication;
 
 public class GitHubUserEmailDto
 {
-    [JsonPropertyName("email")]
+    [JsonProperty("email")]
     public string Email { get; set; } = null!;
 
-    [JsonPropertyName("primary")]
+    [JsonProperty("primary")]
     public bool Primary { get; set; }
 }

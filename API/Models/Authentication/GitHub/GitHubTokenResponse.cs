@@ -1,15 +1,15 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace API.Models.Authentication;
 
 public class GitHubTokenResponse
 {
-    [JsonPropertyName("access_token")]
+    [JsonProperty("access_token")]
     public string AccessToken { get; set; } = null!;
 
-    [JsonPropertyName("scope")]
+    [JsonProperty("scope")]
     public string Scope { get; set; } = null!;
 
-    [JsonPropertyName("token_type")]
+    [JsonProperty("token_type")]
     public string TokenType { get; set; } = null!;
 }

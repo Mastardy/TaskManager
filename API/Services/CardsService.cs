@@ -26,7 +26,7 @@ public class CardsService
 
     public async Task<List<Card>> GetAllAsync()
     {
-        return await m_MongoDBService.GetAllAsync();
+        return await m_MongoDBService.GetAllCardsAsync();
     }
 
     public async Task<Card?> GetAsync(string id)
@@ -34,7 +34,7 @@ public class CardsService
         var cache = await m_RedisService.GetAsync(id);
         if (cache != null) return cache;
 
-        var result = await m_MongoDBService.GetAsync(id);
+        var result = await m_MongoDBService.GetCardAsync(id);
         if (result == null) return null;
 
         await m_RedisService.InsertAsync(result, TimeSpan.FromMinutes(10));
@@ -45,21 +45,21 @@ public class CardsService
     public async Task CreateAsync(Card newCard)
     {
         await m_RedisService.InsertAsync(newCard, TimeSpan.FromMinutes(10));
-        await m_MongoDBService.CreateAsync(newCard);
+        await m_MongoDBService.CreateCardAsync(newCard);
         await m_RabbitMQService.PublishAsync(EventType.CARD_CREATED, newCard.Id);
     }
 
     public async Task UpdateAsync(Card updatedCard)
     {
         await m_RedisService.DeleteAsync(updatedCard.Id);
-        await m_MongoDBService.UpdateAsync(updatedCard);
+        await m_MongoDBService.UpdateCardAsync(updatedCard);
         await m_RabbitMQService.PublishAsync(EventType.CARD_UPDATED, updatedCard.Id);
     }
 
     public async Task DeleteAsync(string id)
     {
         await m_RedisService.DeleteAsync(id);
-        await m_MongoDBService.DeleteAsync(id);
+        await m_MongoDBService.DeleteCardAsync(id);
         await m_RabbitMQService.PublishAsync(EventType.CARD_DELETED, id);
     }
 }

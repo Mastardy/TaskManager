@@ -1,6 +1,6 @@
 @API_Route = http://localhost:5254/api/v1
-@JWT = 
 
+@JWT = 
 ### Get JWT from github OAuth: http://localhost:5254/api/v1/auth/github
 
 ### GET All Cards

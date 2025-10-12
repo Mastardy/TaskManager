@@ -1,18 +1,18 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace API.Models.Authentication;
 
 public class GitHubUserDto
 {
-    [JsonPropertyName("login")]
+    [JsonProperty("login")]
     public string Login { get; set; } = null!;
 
-    [JsonPropertyName("id")]
+    [JsonProperty("id")]
     public int Id { get; set; }
 
-    [JsonPropertyName("avatar_url")]
+    [JsonProperty("avatar_url")]
     public string AvatarUrl { get; set; } = null!;
 
-    [JsonPropertyName("email")]
+    [JsonProperty("email")]
     public string Email { get; set; } = null!;
 }

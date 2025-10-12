@@ -1,6 +1,6 @@
 using System.Text;
-using System.Text.Json;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Utils;
@@ -58,7 +58,7 @@ public class RabbitMQService : IAsyncDisposable
             try
             {
                 var json = Encoding.UTF8.GetString(evtArgs.Body.ToArray());
-                var message = JsonSerializer.Deserialize<T>(json);
+                var message = JsonConvert.DeserializeObject<T>(json);
 
                 await messageHandler(message);
                 await channel.BasicAckAsync(evtArgs.DeliveryTag, multiple: false);

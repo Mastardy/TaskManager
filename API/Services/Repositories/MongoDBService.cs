@@ -7,6 +7,7 @@ namespace API.Services.Repositories;
 
 public class MongoDBService
 {
+    private readonly IMongoCollection<User> m_UserCollection;
     private readonly IMongoCollection<Card> m_CardCollection;
 
     public MongoDBService(IOptions<MongoDBSettings> settings)
@@ -24,16 +25,18 @@ public class MongoDBService
         var mongoClient = new MongoClient(mongoURI);
         var mongoDatabase = mongoClient.GetDatabase(database);
         m_CardCollection = mongoDatabase.GetCollection<Card>(collection);
+        m_UserCollection = mongoDatabase.GetCollection<User>(user);
     }
 
-    public async Task<List<Card>> GetAllAsync() => await m_CardCollection.Find(_ => true).ToListAsync();
+    public async Task<List<Card>> GetAllCardsAsync() => await m_CardCollection.Find(_ => true).ToListAsync();
 
-    public async Task<Card?> GetAsync(string id) => await m_CardCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    public async Task<Card?> GetCardAsync(string id) =>
+        await m_CardCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-    public async Task CreateAsync(Card newCard) => await m_CardCollection.InsertOneAsync(newCard);
+    public async Task CreateCardAsync(Card newCard) => await m_CardCollection.InsertOneAsync(newCard);
 
-    public async Task UpdateAsync(Card updatedCard) =>
+    public async Task UpdateCardAsync(Card updatedCard) =>
         await m_CardCollection.ReplaceOneAsync(x => x.Id == updatedCard.Id, updatedCard);
 
-    public async Task DeleteAsync(string id) => await m_CardCollection.DeleteOneAsync(x => x.Id == id);
+    public async Task DeleteCardAsync(string id) => await m_CardCollection.DeleteOneAsync(x => x.Id == id);
 }

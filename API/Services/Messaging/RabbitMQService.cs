@@ -1,10 +1,10 @@
 using System.Text;
-using System.Text.Json;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using API.Utils;
 using API.Models;
+using Newtonsoft.Json;
 
 namespace API.Services.Messaging;
 
@@ -73,40 +73,40 @@ public class RabbitMQService : IAsyncDisposable
 
         await DeclareQueueAsync(queueName);
 
-        var json = JsonSerializer.Serialize(message);
+        var json = JsonConvert.SerializeObject(message);
         var body = Encoding.UTF8.GetBytes(json);
 
         await channel.BasicPublishAsync(string.Empty, queueName, body);
     }
-    
+
     public async Task<T?> ConsumeAsync<T>(string queueName)
     {
         var channel = await GetChannelAsync();
-    
+
         await DeclareQueueAsync(queueName);
-    
+
         var result = await channel.BasicGetAsync(queueName, true);
         if (result == null) return default;
-    
+
         var json = Encoding.UTF8.GetString(result.Body.ToArray());
-        return JsonSerializer.Deserialize<T>(json);
+        return JsonConvert.DeserializeObject<T>(json);
     }
-    
+
     public async Task StartConsumingAsync<T>(string queueName, Func<T?, Task> messageHandler)
     {
         var channel = await GetChannelAsync();
-    
+
         await DeclareQueueAsync(queueName);
-    
+
         var consumer = new AsyncEventingBasicConsumer(channel);
-    
+
         consumer.ReceivedAsync += async (_ /*sender*/, evtArgs) =>
         {
             try
             {
                 var json = Encoding.UTF8.GetString(evtArgs.Body.ToArray());
-                var message = JsonSerializer.Deserialize<T>(json);
-    
+                var message = JsonConvert.DeserializeObject<T>(json);
+
                 await messageHandler(message);
                 await channel.BasicAckAsync(evtArgs.DeliveryTag, multiple: false);
             }
@@ -116,7 +116,7 @@ public class RabbitMQService : IAsyncDisposable
                 await channel.BasicNackAsync(evtArgs.DeliveryTag, multiple: false, requeue: true);
             }
         };
-    
+
         await channel.BasicConsumeAsync(queueName, false, consumer);
     }
 
