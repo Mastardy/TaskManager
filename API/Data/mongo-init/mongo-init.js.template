@@ -1,19 +1,29 @@
 db = db.getSiblingDB("${MONGO_DB}");
 
 db.createUser({
-   user: "${MONGO_USER}",
-   pwd: "${MONGO_PASSWORD}",
-   roles: [
-       {
-           role: "dbOwner",
-           db: "${MONGO_DB}"
-       }
-   ]
+    user: "${MONGO_USER}",
+    pwd: "${MONGO_PASSWORD}",
+    roles: [
+        {
+            role: "dbOwner",
+            db: "${MONGO_DB}"
+        }
+    ]
 });
 
-db.createCollection("${MONGO_COLLECTION}");
-db.${MONGO_COLLECTION}.insertOne({
+db.createCollection("Cards");
+db.Cards.insertOne({
     title: "Test",
     description: "Test description",
     isDone: true
-})
+});
+db.Cards.deleteOne({title: "Test"});
+
+db.createCollection("Users");
+db.Users.insertOne({
+    username: "Mastardy",
+    github_id: 1,
+    avatar_url: "",
+    email: ""
+});
+db.Users.deleteOne({username: "Mastardy"});

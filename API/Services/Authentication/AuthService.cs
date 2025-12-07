@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using API.Models;
 using API.Models.Authentication;
+using API.Services.Repositories;
 using API.Utils;
 using Microsoft.Extensions.Options;
 
@@ -11,18 +12,20 @@ public class AuthService
     private readonly AuthSettings.GitHubSettings m_GitHubSettings;
     private readonly HttpClient m_HttpClient;
     private readonly TokenService m_TokenService;
+    private readonly MongoDBService m_MongoDBService;
 
-    public AuthService(IOptions<AuthSettings> authSettings, TokenService tokenService)
+    public AuthService(IOptions<AuthSettings> authSettings, TokenService tokenService, MongoDBService mongoDBService)
     {
         m_GitHubSettings = authSettings.Value.GitHub;
         m_HttpClient = new HttpClient();
         m_TokenService = tokenService;
+        m_MongoDBService = mongoDBService;
     }
 
     public string GetGitHubAuthorizeUrl()
     {
         var clientId = EnvHelper.Get(m_GitHubSettings.ClientIdKey);
-        var scopes = "read:user+user:email";
+        var scopes = "user";
 
         return $"https://github.com/login/oauth/authorize?client_id={clientId}&scope={scopes}";
     }
@@ -36,6 +39,7 @@ public class AuthService
         else if (string.IsNullOrEmpty(userData.Email)) return null;
 
         var username = userData.Login;
+        await m_MongoDBService.CreateOrUpdateUserAsync(userData);
 
         return m_TokenService.GenerateToken(userData.Id.ToString(), username);
     }
@@ -55,6 +59,7 @@ public class AuthService
         request.Content = content;
 
         var response = await m_HttpClient.SendAsync(request);
+
         var json = await response.Content.ReadFromJsonAsync<GitHubTokenResponse>();
         if (json == null) throw new NullReferenceException("GitHubTokenResponse json is Null!");
 
@@ -88,6 +93,7 @@ public class AuthService
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         request.Headers.UserAgent.ParseAdd("Mastardy Boards 1.0");
         request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
+        request.Headers.Add("X-GitHub-Api-Version", "2022-11-28");
 
         var response = await m_HttpClient.SendAsync(request);
 
